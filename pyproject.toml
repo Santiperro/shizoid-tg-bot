@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "shizoid-tg-bot"
+version = "0.1.0"
+description = ""
+authors = ["Santiperro <egor.ev22@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openai = "^1.58.1"
+ipykernel = "^6.29.5"
+python-dotenv = "^1.0.1"
+aiogram = "^3.16.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
