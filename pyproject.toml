@@ -8,10 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 openai = "^1.58.1"
-ipykernel = "^6.29.5"
 python-dotenv = "^1.0.1"
 aiogram = "^3.16.0"
 
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+black = "^24.10.0"
 
 [build-system]
 requires = ["poetry-core"]

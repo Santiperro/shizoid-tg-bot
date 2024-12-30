@@ -6,7 +6,13 @@ from aiogram import Bot, Dispatcher
 
 from handlers.group_handlers import group_router
 from handlers.private_handlers import private_router
+from log.logging_middleware import LoggingMiddleware 
 
+
+logging.basicConfig(
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 async def main():
     load_dotenv()
@@ -18,6 +24,8 @@ async def main():
     bot = Bot(token=bot_token)
     
     dp = Dispatcher()
+    # dp.message.middleware(LoggingMiddleware())
+    
     dp.include_router(group_router)
     dp.include_router(private_router)
     
@@ -25,7 +33,4 @@ async def main():
     
     
 if __name__ == '__main__':
-    logging.basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        level=logging.INFO)
     asyncio.run(main())

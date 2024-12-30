@@ -12,7 +12,6 @@ from texts.bot_buttons import *
 private_router = Router()
 
 def is_private_chat(message: Message) -> bool:
-    """Проверяет, что сообщение пришло из личного чата."""
     return message.chat.type == "private"
 
 
@@ -25,15 +24,16 @@ async def cmd_start(message: Message):
 
 @private_router.message(lambda message: is_private_chat(message) 
                         and message.text 
-                        and (message.text.lower() == 'help' 
+                        and (message.text == HELP_BUTTON 
                             or message.text.lower() == '/help'))
 async def cmd_help(message: Message):
     await message.answer(HELP_MESSAGE,
                          reply_markup=main_kb)
 
 
-@private_router.message(lambda message: is_private_chat(message),
-                        F.text == ADD_BOT_BUTTON)
+@private_router.message(lambda message: is_private_chat(message)
+                        and message.text
+                        and message.text == ADD_BOT_BUTTON)
 async def initiate_group_selection(message: Message):
     
     bot_username = (await message.bot.me()).username
@@ -42,8 +42,8 @@ async def initiate_group_selection(message: Message):
 
     await message.answer(
         ADD_BOT_TIP_MESSAGE,
-        reply_markup=add_bot_kb
-    )
+        reply_markup=add_bot_kb)
+
 
 @private_router.message(lambda message: is_private_chat(message) 
                         and message.text)
