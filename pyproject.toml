@@ -16,6 +16,7 @@ aiogram = "^3.16.0"
 ipykernel = "^6.29.5"
 black = "^24.10.0"
 
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

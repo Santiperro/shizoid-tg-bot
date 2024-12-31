@@ -1,7 +1,7 @@
 import logging
 import random
 from collections import defaultdict, deque
-from aiogram import F, Router, Bot
+from aiogram import F, Router
 from aiogram.types import Message, ChatMemberUpdated
 from aiogram.filters import invert_f, ChatMemberUpdatedFilter, IS_MEMBER, IS_NOT_MEMBER
 from openai import OpenAIError
@@ -9,11 +9,11 @@ from openai import OpenAIError
 from texts.bot_messages import ADD_GROUP_EVENT_MESSAGE
 from texts.system_message import SYSTEM_MESSAGE
 from services.openai_api import create_response
+from config import REPLY_CHANCE, CHAT_HISTORY_LENGTH
 from filters.group_filters import *
 
 
-MAX_HISTORY = 3
-user_histories: defaultdict = defaultdict(lambda: deque(maxlen=MAX_HISTORY))
+user_histories: defaultdict = defaultdict(lambda: deque(maxlen=CHAT_HISTORY_LENGTH))
 logger = logging.getLogger(__name__)
 group_router = Router()
 
@@ -38,7 +38,6 @@ async def handle_mention_of_bot(message: Message):
     user_id = message.from_user.id
     user_message = message.text
     history = user_histories[user_id]
-    
     try:
         messages = [{"role": "system", "content": SYSTEM_MESSAGE},] 
 
@@ -60,10 +59,12 @@ async def handle_mention_of_bot(message: Message):
         logger.error(f"{e}")
 
 
-@group_router.message(IsGroupChatMessage(), IsLongMessage(min_length=30), invert_f(IsReplyOrMention()))
+@group_router.message(IsGroupChatMessage(), 
+                      IsLongMessage(min_length=CHAT_HISTORY_LENGTH), 
+                      invert_f(IsReplyOrMention()))
 async def handle_long_group_message(message: Message):
     try:
-        if random.random() <= 0.5:
+        if random.random() <= REPLY_CHANCE:
             user_id = message.from_user.id
             user_message = message.text
             

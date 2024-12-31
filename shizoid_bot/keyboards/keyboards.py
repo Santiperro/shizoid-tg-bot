@@ -2,29 +2,14 @@ from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
                            InlineKeyboardButton, InlineKeyboardMarkup)
 
 from texts.bot_buttons import *
+from config import DEFAULT_BOT_RIGHTS
 
 
 def create_add_bot_keyboard(bot_username: str) -> InlineKeyboardMarkup:
     
-    # TODO В конфиг
-    default_rights = [
-        # "promote_members",
-        # "delete_messages",
-        # "restrict_members",
-        # "invite_users",
-        "pin_messages",
-        # "manage_video_chats",
-        # "manage_call",
-        # "manage_topics",
-        # "anonymous",
-        # "add_admins",
-        # 'post_stories',
-        # 'delete_stories'
-    ]
+    admin_rights = "+".join(DEFAULT_BOT_RIGHTS)
     
-    admin_rights_str = "+".join(default_rights)
-    
-    add_link = f"https://t.me/{bot_username}?startgroup=true&admin={admin_rights_str}"
+    add_link = f"https://t.me/{bot_username}?startgroup=true&admin={admin_rights}"
     
     return InlineKeyboardMarkup(
         inline_keyboard=[

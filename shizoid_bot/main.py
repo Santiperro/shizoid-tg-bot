@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 
 from handlers.group_handlers import group_router
 from handlers.private_handlers import private_router
-from log.logging_middleware import LoggingMiddleware 
+# from log.logging_middleware import LoggingMiddleware 
 
 
 logging.basicConfig(
