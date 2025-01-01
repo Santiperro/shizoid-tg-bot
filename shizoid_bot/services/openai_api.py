@@ -34,6 +34,8 @@ async def create_response(messages: list[dict]) -> str:
         logger.error(f"Error in create_response: {e}")
         raise
     
+    logger.info(response)
+    
     if not response.choices:
         logger.error("API response does not contain 'choices'")
         raise ValueError("Unexpected API response: no 'choices' found")

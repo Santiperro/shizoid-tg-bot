@@ -27,4 +27,16 @@ class IsLongMessage(Filter):
         self.min_length = min_length
 
     async def __call__(self, message: Message) -> bool:
-        return message.text and len(message.text) > self.min_length
+        return ((message.text and len(message.text) > self.min_length) 
+                or (message.caption and len(message.caption) > self.min_length))
+    
+    
+class IsForwardMessage(Filter):
+    async def __call__(self, message: Message) -> bool:
+        return message.forward_from or message.forward_from_chat
+    
+    
+class PrivateMessage(Filter):
+    async def __call__(self, message: Message) -> bool:
+        return message.chat.type == "private"
+    

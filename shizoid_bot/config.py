@@ -57,8 +57,13 @@ REPLY_MESSAGE_LENGTH = 70
 # Шанс ответа
 REPLY_CHANCE = 0.2
 
+# Длина forward сообщения для ответа
+FORWARD_MESSAGE_LENGTH = 70
+# Шанс ответа на forward сообщение
+FORWARD_CHANCE = 0.5
+
 # Длина истории сообщений, которую помнит бот
-CHAT_HISTORY_LENGTH = 1
+CHAT_HISTORY_LENGTH = 0
 
 # Ограничения на ответ бота на его упоминание или reply
 
