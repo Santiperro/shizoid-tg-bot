@@ -8,7 +8,7 @@ class IsGroupChatMessage(Filter):
         return is_group_message
 
 
-class IsReplyOrMention(Filter):
+class IsBotReplyOrMention(Filter):
     async def __call__(self, message: Message) -> bool:
         bot_user = await message.bot.me()
         

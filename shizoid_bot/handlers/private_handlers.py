@@ -1,9 +1,8 @@
 from aiogram import Router, F
 from aiogram.types import Message
-from aiogram.filters import CommandStart, Command
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.filters import CommandStart
 
-from  keyboards.keyboards import (main_keyboard as main_kb, 
+from keyboards.keyboards import (main_keyboard as main_kb, 
                                   create_add_bot_keyboard)
 from texts.bot_messages import *
 from texts.bot_buttons import *
