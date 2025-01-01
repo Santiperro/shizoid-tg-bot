@@ -29,11 +29,10 @@ API_CONFIG = {
     },
 }
 
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+
 SELECTED_API = "llama33_70"
-
-REPLY_CHANCE = 0.1
-
-CHAT_HISTORY_LENGTH = 3
 
 DEFAULT_BOT_RIGHTS = [
     # "promote_members",
@@ -49,3 +48,21 @@ DEFAULT_BOT_RIGHTS = [
     # 'post_stories',
     # 'delete_stories'
 ]
+
+# Условия для того, чтобы бот ответил на случайное сообщение
+# Шанс срабатывает при выполнение всех остальных условий
+
+# Длина сообщения для ответа
+REPLY_MESSAGE_LENGTH = 70
+# Шанс ответа
+REPLY_CHANCE = 0.2
+
+# Длина истории сообщений, которую помнит бот
+CHAT_HISTORY_LENGTH = 1
+
+# Ограничения на ответ бота на его упоминание или reply
+
+# Максимальное количество сообщений за время окна
+MESSAGE_LIMIT = 2
+# Временное окно в секундах
+TIME_WINDOW_SECONDS = 600
