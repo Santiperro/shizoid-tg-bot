@@ -10,25 +10,37 @@ class IsGroupChatMessage(Filter):
 
 class IsBotReplyOrMention(Filter):
     async def __call__(self, message: Message) -> bool:
-        bot_user = await message.bot.me()
+        bot = await message.bot.me()
         
-        is_reply = message.reply_to_message and message.reply_to_message.from_user.id == bot_user.id
+        message_text = message.text or message.caption
         
-        is_mention = message.entities and any(
-            entity.type == 'mention' and f"@{bot_user.username}" in message.text
-            for entity in message.entities
-        )
+        is_reply = message.reply_to_message and message.reply_to_message.from_user.id == bot.id
         
+        if message_text is None:
+            is_mention = False
+        else:
+            is_mention = f"@{bot.username}" in message_text
+            
         return is_reply or is_mention
     
 
-class IsLongMessage(Filter):
-    def __init__(self, min_length: int):
+class MessageLength(Filter):
+    def __init__(self, min_length: int = None, max_length: int = None):
         self.min_length = min_length
+        self.max_length = max_length
 
     async def __call__(self, message: Message) -> bool:
-        return ((message.text and len(message.text) > self.min_length) 
-                or (message.caption and len(message.caption) > self.min_length))
+        if not message.text and not message.caption:
+            return False
+        
+        message_text = message.text or message.caption
+        
+        if self.min_length is not None and len(message_text) <= self.min_length:
+            return False
+        if self.max_length is not None and len(message_text) >= self.max_length:
+            return False
+        
+        return True
     
     
 class IsForwardMessage(Filter):

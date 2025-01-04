@@ -27,12 +27,20 @@ API_CONFIG = {
         "max_tokens": None,
         "temperature": 0.7
     },
+    "llama32_90":{
+        "base_url": "https://api.groq.com/openai/v1",
+        "api_key_env": "GROQ_KEY",
+        "default_model": "llama-3.2-90b-vision-preview",
+        "max_tokens": 512,
+        "temperature": 0.05
+    }
 }
+
+SELECTED_TEXT_TO_TEXT_API = "llama33_70"
+SELECTED_IMAGE_TO_TEXT_API = "llama32_90"
 
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
-
-SELECTED_API = "llama33_70"
 
 DEFAULT_BOT_RIGHTS = [
     # "promote_members",
@@ -49,25 +57,38 @@ DEFAULT_BOT_RIGHTS = [
     # 'delete_stories'
 ]
 
-# Условия для того, чтобы бот ответил на случайное сообщение
-# Шанс срабатывает при выполнение всех остальных условий
+# Бот обрабатывает и отвечает на картинку, если текст меньше 
+CAPTION_MAX_LENGTH = 100
 
-# Длина сообщения для ответа
-REPLY_MESSAGE_LENGTH = 70
+# Минимальная длина сообщения без картинки для ответа
+COMMON_MESSAGE_MIN_LENGTH = 100
+# Максимальная длина сообщения для ответа
+COMMON_MESSAGE_MAX_LENGTH = 2000
 # Шанс ответа
-REPLY_CHANCE = 0.2
+COMMON_GROUP_MESSAGE_REPLY_CHANCE = 0.1
 
-# Длина forward сообщения для ответа
-FORWARD_MESSAGE_LENGTH = 70
+
+# Минимальная длина forward сообщения без картинки для ответа
+FORWARD_MESSAGE_MIN_LENGTH = 100
+# Максимальная длина forward сообщения для ответа
+FORWARD_MESSAGE_MAX_LENGTH = 2000
 # Шанс ответа на forward сообщение
-FORWARD_CHANCE = 0.5
+FORWARD_MESSAGE_REPLY_CHANCE = 0.5
+
+
+# Разрешить ответ на reply или упоминание
+ALLOW_REPLY_OR_MENTION = False
+
+# Минимальная длина сообщения с reply или упоминанием без картинки для ответа
+REPLY_OR_MENTION_MESSAGE_MIN_LENGTH = 100
+# Максимальная длина сообщения с reply или упоминанием для ответа
+REPLY_OR_MENTION_MESSAGE_MAX_LENGTH = 2000
+# Шанс ответа на reply или упоминание
+REPLY_OR_MENTION_MESSAGE_REPLY_CHANCE = 1
 
 # Длина истории сообщений, которую помнит бот
 CHAT_HISTORY_LENGTH = 0
-
-# Ограничения на ответ бота на его упоминание или reply
-
-# Максимальное количество сообщений за время окна
-MESSAGE_LIMIT = 2
-# Временное окно в секундах
+# Временное окно в секундах для ответа на reply или упоминание
 TIME_WINDOW_SECONDS = 600
+# Максимальное количество сообщений за время окна
+MESSAGE_LIMIT = 1
