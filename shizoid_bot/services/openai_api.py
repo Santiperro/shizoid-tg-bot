@@ -1,8 +1,8 @@
 import os
 import logging
 from asyncio import to_thread
-from openai import OpenAI
 from dotenv import load_dotenv
+from openai import OpenAI
 
 from config import (API_CONFIG, SELECTED_TEXT_TO_TEXT_API, 
                     SELECTED_IMAGE_TO_TEXT_API)
@@ -22,7 +22,8 @@ async def create_response(messages: list[dict],
     api_key = os.getenv(config["api_key_env"])
     
     if not api_key:
-        raise ValueError(f"Api key of {config["default_model"]} is unavailable in environment variables")
+        raise ValueError(f"Api key of {config["default_model"]} is unavailable\
+            in environment variables")
     
     client = OpenAI(
         base_url=config["base_url"],
@@ -37,13 +38,13 @@ async def create_response(messages: list[dict],
             temperature=config["temperature"],
         )
     except Exception as e:
-        logger.error(f"Error in create response to {config["default_model"]}: {e}")
-        raise
-    
+        raise Exception(f"Error in create response to \
+            {config["default_model"]}: {e}")
+     
     logger.info(response)
     
     if not response.choices:
-        logger.error(f"{config["default_model"]} API did not give the expected response")
-        raise ValueError(f"{config["default_model"]} API did not give the expected response")
+        raise ValueError(f"{config["default_model"]} API did not give \
+            the expected response")
     
     return response.choices[0].message.content

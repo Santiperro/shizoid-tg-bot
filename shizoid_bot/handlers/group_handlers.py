@@ -105,7 +105,7 @@ async def handle_mention_of_bot(message: Message, bot: Bot):
         try:
             image_description = await handle_photo(bot, message)
         except Exception as e:
-            logger.error(f"Error processing photo: {e}")
+            logger.error(f"Error processing reply photo: {e}")
 
     user_id = message.from_user.id
     history = user_histories[user_id]
@@ -126,7 +126,7 @@ async def handle_mention_of_bot(message: Message, bot: Bot):
 
 
 @group_router.message(IsForwardMessage(), 
-                      ~PrivateMessage())
+                      ~IsPrivateMessage())
 async def handle_forward_group_message(message: Message, bot: Bot):
     if random.random() > FORWARD_MESSAGE_REPLY_CHANCE:
         return
@@ -142,7 +142,7 @@ async def handle_forward_group_message(message: Message, bot: Bot):
         try:
             image_description = await handle_photo(bot, message)
         except Exception as e:
-            logger.error(f"Error processing photo: {e}")
+            logger.error(f"Error processing forward photo: {e}")
     
     messages = await build_messages(
         system_message=TEXT_TO_TEXT_SYSTEM_MESSAGE,

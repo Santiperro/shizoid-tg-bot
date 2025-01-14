@@ -8,10 +8,11 @@ from aiogram.methods import DeleteWebhook
 from handlers.group_handlers import group_router
 from handlers.private_handlers import private_router
 # from middlewares.logging_middleware import LoggingMiddleware 
-from middlewares.media_group_middleware import MediaGroupFilterMiddleware
+from middlewares.media_filter_middleware import MediaGroupFilterMiddleware
 from middlewares.throttling_middleware import ThrottlingMiddleware
 from utils.db import redis
-from config import MESSAGE_LIMIT, TIME_WINDOW_SECONDS
+from config import (GROUP_CHAT_MESSAGE_LIMIT, GROUP_CHAT_TIME_WINDOW_SECONDS, 
+                    PRIVATE_CHAT_MESSAGE_LIMIT, PRIVATE_CHAT_TIME_WINDOW_SECONDS)
 
 
 logging.basicConfig(
@@ -33,8 +34,10 @@ async def main():
                                                      expiry_seconds=60))
     dp.message.middleware(ThrottlingMiddleware(redis=redis,
                                                bot=bot,
-                                               message_limit=MESSAGE_LIMIT,
-                                               time_window=TIME_WINDOW_SECONDS))
+                                               group_chat_message_limit=GROUP_CHAT_MESSAGE_LIMIT,
+                                               private_chat_message_limit=PRIVATE_CHAT_MESSAGE_LIMIT,
+                                               group_chat_time_window=GROUP_CHAT_TIME_WINDOW_SECONDS,
+                                               private_chat_time_window=PRIVATE_CHAT_TIME_WINDOW_SECONDS))
     # dp.message.middleware(LoggingMiddleware())
     
     dp.include_router(group_router)

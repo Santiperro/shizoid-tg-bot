@@ -73,12 +73,11 @@ FORWARD_MESSAGE_MIN_LENGTH = 100
 # Максимальная длина forward сообщения для ответа
 FORWARD_MESSAGE_MAX_LENGTH = 2000
 # Шанс ответа на forward сообщение
-FORWARD_MESSAGE_REPLY_CHANCE = 0.5
+FORWARD_MESSAGE_REPLY_CHANCE = 1
 
 
 # Разрешить ответ на reply или упоминание
 ALLOW_REPLY_OR_MENTION = False
-
 # Минимальная длина сообщения с reply или упоминанием без картинки для ответа
 REPLY_OR_MENTION_MESSAGE_MIN_LENGTH = 100
 # Максимальная длина сообщения с reply или упоминанием для ответа
@@ -88,7 +87,13 @@ REPLY_OR_MENTION_MESSAGE_REPLY_CHANCE = 1
 
 # Длина истории сообщений, которую помнит бот
 CHAT_HISTORY_LENGTH = 0
-# Временное окно в секундах для ответа на reply или упоминание
-TIME_WINDOW_SECONDS = 600
+
+# Временное окно в секундах для взаимодействия с пользователем в групповом чате
+GROUP_CHAT_TIME_WINDOW_SECONDS = 600
 # Максимальное количество сообщений за время окна
-MESSAGE_LIMIT = 1
+GROUP_CHAT_MESSAGE_LIMIT = 10
+
+
+PRIVATE_CHAT_TIME_WINDOW_SECONDS = 60
+
+PRIVATE_CHAT_MESSAGE_LIMIT = 3
