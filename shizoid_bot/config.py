@@ -67,14 +67,12 @@ COMMON_MESSAGE_MAX_LENGTH = 2000
 # Шанс ответа
 COMMON_GROUP_MESSAGE_REPLY_CHANCE = 0.1
 
-
 # Минимальная длина forward сообщения без картинки для ответа
 FORWARD_MESSAGE_MIN_LENGTH = 100
 # Максимальная длина forward сообщения для ответа
 FORWARD_MESSAGE_MAX_LENGTH = 2000
 # Шанс ответа на forward сообщение
 FORWARD_MESSAGE_REPLY_CHANCE = 1
-
 
 # Разрешить ответ на reply или упоминание
 ALLOW_REPLY_OR_MENTION = False
@@ -93,7 +91,7 @@ GROUP_CHAT_TIME_WINDOW_SECONDS = 600
 # Максимальное количество сообщений за время окна
 GROUP_CHAT_MESSAGE_LIMIT = 20
 
-
+# Временное окно в секундах для взаимодействия с пользователем в личном чате
 PRIVATE_CHAT_TIME_WINDOW_SECONDS = 60
-
-PRIVATE_CHAT_MESSAGE_LIMIT = 3
+# Максимальное количество сообщений за время окна
+PRIVATE_CHAT_MESSAGE_LIMIT = 30
