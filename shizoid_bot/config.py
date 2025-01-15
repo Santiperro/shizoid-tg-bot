@@ -25,7 +25,7 @@ API_CONFIG = {
         "api_key_env": "GROQ_KEY",
         "default_model": "llama-3.3-70b-versatile",
         "max_tokens": None,
-        "temperature": 0.7
+        "temperature": 0.85
     },
     "llama32_90":{
         "base_url": "https://api.groq.com/openai/v1",
@@ -91,7 +91,7 @@ CHAT_HISTORY_LENGTH = 0
 # Временное окно в секундах для взаимодействия с пользователем в групповом чате
 GROUP_CHAT_TIME_WINDOW_SECONDS = 600
 # Максимальное количество сообщений за время окна
-GROUP_CHAT_MESSAGE_LIMIT = 10
+GROUP_CHAT_MESSAGE_LIMIT = 20
 
 
 PRIVATE_CHAT_TIME_WINDOW_SECONDS = 60
