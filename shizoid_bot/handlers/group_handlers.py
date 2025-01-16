@@ -11,6 +11,8 @@ from texts.bot_messages import (ADD_GROUP_EVENT_MESSAGE,
                                 LIMIT_MESSAGE_NOT_EXCEEDED)
 from texts.system_messages import (TEXT_TO_TEXT_SYSTEM_MESSAGE, 
                                    IMAGE_TO_TEXT_SYSTEM_MESSAGE)
+from exceptions.exceptions import (APIKeyError, APIRequestError,
+                                   APIResponseError)
 from utils.db import redis
 from services.openai_api import create_response
 from utils.time_utils import format_ttl_flexible
@@ -22,6 +24,26 @@ from config import *
 user_histories: defaultdict = defaultdict(lambda: deque(maxlen=CHAT_HISTORY_LENGTH))
 logger = logging.getLogger(__name__)
 group_router = Router()
+
+def error_message_handler(context=""):
+    def decorator(func):
+        async def wrapper(*args, **kwargs):
+            func_name = func.__name__
+            try:
+                result = await func(*args, **kwargs)
+                logger.info(f"Function '{func_name}' executed successfully {context}.")
+                return result
+            except APIKeyError:
+                logger.error("API key is missing or invalid.")
+            except APIRequestError:
+                logger.error("Failed to connect to the API.")
+            except APIResponseError:
+                logger.error("Received an invalid response from the API.")
+            except Exception as e:
+                logger.exception(f"Unhandled error {context}: {e}")
+        return wrapper
+    return decorator
+
 
 async def get_message_text(message: Message) -> str:
     return message.text or message.caption
@@ -85,9 +107,9 @@ async def bot_added_to_group(event: ChatMemberUpdated):
             ADD_GROUP_EVENT_MESSAGE)
         
 
-@group_router.message(IsGroupChatMessage(), 
-                      IsBotReplyOrMention())
-async def handle_mention_of_bot(message: Message, bot: Bot):
+@group_router.message(IsGroupChatMessage(), IsBotReplyOrMention())
+@error_message_handler()
+async def handle_mention_of_bot(message: Message, bot: Bot, **kwargs):
     if not ALLOW_REPLY_OR_MENTION:
         return
     
@@ -100,13 +122,9 @@ async def handle_mention_of_bot(message: Message, bot: Bot):
         return
 
     image_description = ""
-    if message.photo and (not user_message 
-                          or len(user_message) <= CAPTION_MAX_LENGTH):
-        try:
-            image_description = await handle_photo(bot, message)
-        except Exception as e:
-            logger.error(f"Error processing reply photo: {e}")
-
+    if message.photo and (not user_message or len(user_message) <= CAPTION_MAX_LENGTH):
+        image_description = await handle_photo(bot, message)
+    
     user_id = message.from_user.id
     history = user_histories[user_id]
     messages = await build_messages(
@@ -115,19 +133,15 @@ async def handle_mention_of_bot(message: Message, bot: Bot):
         user_message=user_message,
         image_description=image_description
     )
-    try:
-        model_response = await create_response(messages)
-        await message.reply(model_response)
-        
-        history.append((user_message, model_response))
-
-    except Exception as e:
-        logger.error(f"Error processing reply or mention: {e}")
+    model_response = await create_response(messages)
+    await message.reply(model_response)
+    history.append((user_message, model_response))
 
 
 @group_router.message(IsForwardMessage(), 
                       ~IsPrivateMessage())
-async def handle_forward_group_message(message: Message, bot: Bot):
+@error_message_handler()
+async def handle_forward_group_message(message: Message, bot: Bot, **kwargs):
     if random.random() > FORWARD_MESSAGE_REPLY_CHANCE:
         return
     
@@ -139,28 +153,23 @@ async def handle_forward_group_message(message: Message, bot: Bot):
     image_description = ""
     if message.photo and (not user_message 
                           or len(user_message) <= CAPTION_MAX_LENGTH):
-        try:
-            image_description = await handle_photo(bot, message)
-        except Exception as e:
-            logger.error(f"Error processing forward photo: {e}")
+        image_description = await handle_photo(bot, message)
     
     messages = await build_messages(
         system_message=TEXT_TO_TEXT_SYSTEM_MESSAGE,
         user_message=user_message,
         image_description=image_description
     )
-    try:
-        model_response = await create_response(messages)
-        await message.answer(model_response)
 
-    except Exception as e:
-        logger.error(f"Error processing forward message:) {e}")
+    model_response = await create_response(messages)
+    await message.answer(model_response)
 
 
 @group_router.message(IsGroupChatMessage(), 
                       ~IsForwardMessage(),
                       ~IsBotReplyOrMention())
-async def handle_group_message(message: Message, bot: Bot):
+@error_message_handler()
+async def handle_group_message(message: Message, bot: Bot, **kwargs):
     if random.random() > COMMON_GROUP_MESSAGE_REPLY_CHANCE:
         return
     
@@ -172,24 +181,17 @@ async def handle_group_message(message: Message, bot: Bot):
     image_description = ""
     if message.photo and (not user_message 
                           or len(user_message) <= CAPTION_MAX_LENGTH):
-        try:
-            image_description = await handle_photo(bot, message)
-        except Exception as e:
-            logger.error(f"Error processing photo: {e}")
+        image_description = await handle_photo(bot, message)
             
     messages = await build_messages(
         system_message=TEXT_TO_TEXT_SYSTEM_MESSAGE,
         user_message=user_message,
         image_description=image_description
     )
+
+    model_response = await create_response(messages)
+    await message.reply(model_response)
     
-    try:
-        model_response = await create_response(messages)
-        await message.reply(model_response)
-        
-        user_id = message.from_user.id
-        history = user_histories[user_id]
-        history.append((user_message, model_response))
-            
-    except Exception as e:
-        logger.error(f"Error processing long message: {e}")
+    user_id = message.from_user.id
+    history = user_histories[user_id]
+    history.append((user_message, model_response))
